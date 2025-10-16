@@ -1,22 +1,37 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import "../styles/global.css";
+import { Footer } from "../components/Footer";
+import { Navigation } from "../components/Navigation";
+import { ClientRouter } from "astro:transitions"; // 👈 CAMBIO: ClientRouter en lugar de ViewTransitions
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta
+      name="description"
+      content="Sitio web dedicado a la vida, obra y legado de César Vallejo, uno de los poetas más importantes de la literatura universal."
+    />
+    <meta
+      name="keywords"
+      content="César Vallejo, poesía, literatura peruana, Trilce, Los Heraldos Negros, biografía, poemas"
+    />
+    <meta name="author" content="Erick Diaz" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>{title} - César Vallejo</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <Navigation client:load />
+    <slot />
+    <Footer client:load />
+  </body>
+</html>
