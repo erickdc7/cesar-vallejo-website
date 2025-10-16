@@ -255,14 +255,14 @@ en el hueco de inmensa sepultura.`,
                     </p>
 
                     {/* Barra de búsqueda */}
-                    <div className="relative max-w-xl mx-auto">
-                        <Search className="absolute left-10 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#1a1a1a]/90 pointer-events-none z-10" />
+                    <div className="relative max-w-xl mx-auto px-2">
+                        <Search className="absolute left-6 sm:left-6 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-[#1a1a1a]/90 pointer-events-none z-10" />
                         <Input
                             type="text"
                             placeholder="Busca poemas por título..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-12 py-3 bg-white/95 backdrop-blur-sm border-[#D4AF37]/30 focus:border-[#D4AF37]"
+                            className="w-full pl-10 sm:pl-12 py-2.5 sm:py-3 text-sm sm:text-base bg-white/95 backdrop-blur-sm border-[#D4AF37]/30 focus:border-[#D4AF37]"
                         />
                     </div>
                 </motion.div>
