@@ -7,12 +7,18 @@ import { Dialog, DialogContent } from './ui/dialog';
 
 export function Multimedia() {
     const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedVideo, setSelectedVideo] = useState(null);
     const [playingAudio, setPlayingAudio] = useState(null);
     const [audioProgress, setAudioProgress] = useState(0);
     const audioRefs = useRef({});
 
+    // Función para extraer el ID de YouTube
+    const getYouTubeId = (url) => {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    };
 
-    /* prueba1111 que desaparezca esto con control + z */
 
     // Aquí defines tus arrays: fotos, videos, audios, documentos
     const fotos = [
@@ -63,28 +69,28 @@ export function Multimedia() {
             titulo: 'Biografía documental',
             descripcion: 'Vida y obra de César Vallejo',
             duracion: '14:07',
-            thumbnail: 'https://i.ytimg.com/an_webp/_9tWthtTcgw/mqdefault_6s.webp?du=3000&sqp=COSMu8cG&rs=AOn4CLBKS_89p9VmnM_P3DOvx6mlOKZsew',
+            thumbnail: 'https://i.ytimg.com/vi/_9tWthtTcgw/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCOTV8agvyyCfITlyfNH9xFaJZdYw',
             youtubeUrl: 'https://www.youtube.com/watch?v=_9tWthtTcgw'
         },
         {
             titulo: 'César Vallejo y la poesía documental',
             descripcion: 'Exposición: Vallejo y su relación con lo documental',
             duracion: '06:40',
-            thumbnail: 'https://i.ytimg.com/an_webp/7d0A769bYOU/mqdefault_6s.webp?du=3000&sqp=CJqUu8cG&rs=AOn4CLBPgvQnTGQQ827lLwAkUZMapE9HjA',
+            thumbnail: 'https://i.ytimg.com/vi/7d0A769bYOU/hqdefault.jpg?sqp=-oaymwFBCNACELwBSFryq4qpAzMIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB8AEB-AHUBoAC4AOKAgwIABABGHIgUCg_MA8=&rs=AOn4CLBOpjP9qIBaE8ebHwwkKp0_bS5fJA',
             youtubeUrl: 'https://www.youtube.com/watch?v=7d0A769bYOU'
         },
         {
             titulo: 'Recital de poemas de César Vallejo',
             descripcion: 'Recitación organizada por la UCH en Perú',
             duracion: '08:35',
-            thumbnail: 'https://i.ytimg.com/an_webp/V1Gk6VGFpTk/mqdefault_6s.webp?du=3000&sqp=CPDpuscG&rs=AOn4CLBx5NLaerraQGLEVsNjw2isqVvPNQ',
+            thumbnail: 'https://i.ytimg.com/vi/V1Gk6VGFpTk/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLB2YUkSNB3vurBrAlzNLTQvdre1Tw',
             youtubeUrl: 'https://www.youtube.com/watch?v=V1Gk6VGFpTk'
         },
         {
             titulo: '¿Qué significa Trilce? — José Cruzado',
             descripcion: 'Exploración del sentido del poemario Trilce',
             duracion: '08:00',
-            thumbnail: 'https://i.ytimg.com/an_webp/jYo_WG5m0FI/mqdefault_6s.webp?du=3000&sqp=CKLvuscG&rs=AOn4CLA6z67muenro8ugyG7Subd_0wlIgw',
+            thumbnail: 'https://i.ytimg.com/vi/jYo_WG5m0FI/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLAU6HohKeLVRgFWzGI5tqXi7hmjsw',
             youtubeUrl: 'https://www.youtube.com/watch?v=jYo_WG5m0FI'
         },
         {
@@ -98,7 +104,7 @@ export function Multimedia() {
             titulo: 'Biografía y obras de César Vallejo',
             descripcion: 'Resumen audiovisual de su vida y producción literaria',
             duracion: '02:41',
-            thumbnail: 'https://i.ytimg.com/an_webp/4YOGBJ6exlU/mqdefault_6s.webp?du=3000&sqp=CI2Zu8cG&rs=AOn4CLA4-1CIvyskxjO2FS1RAlJVN94x1A',
+            thumbnail: 'https://i.ytimg.com/vi/4YOGBJ6exlU/hqdefault.jpg?sqp=-oaymwEnCNACELwBSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLDSkZ5c8zBjD_-PtNX0PSe7UvZd1g',
             youtubeUrl: 'https://www.youtube.com/watch?v=4YOGBJ6exlU'
         }
     ];
@@ -265,31 +271,24 @@ export function Multimedia() {
             <section className="py-20 px-4 bg-[#F5F5DC]">
                 <div className="max-w-7xl mx-auto">
                     <Tabs defaultValue="fotos" className="w-full ">
-                        <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-0 mb-12 bg-white border-2 border-[#D4AF37]/20 p-2 h-auto">
-                            <TabsTrigger value="fotos" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2">
+                        <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-0 mb-12 bg-white border-2 border-[#D4AF37]/20 p-2 h-auto ">
+                            <TabsTrigger value="fotos" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2 cursor-pointer">
                                 <ImageIcon className="w-4 h-4" />
                                 <span className="text-sm">Fotos</span>
                             </TabsTrigger>
-                            <TabsTrigger value="videos" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2">
+                            <TabsTrigger value="videos" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2 cursor-pointer">
                                 <Play className="w-4 h-4" />
                                 <span className="text-sm">Videos</span>
                             </TabsTrigger>
-                            <TabsTrigger value="audio" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2">
+                            <TabsTrigger value="audio" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2 cursor-pointer">
                                 <Volume2 className="w-4 h-4" />
                                 <span className="text-sm">Audio</span>
                             </TabsTrigger>
-                            <TabsTrigger value="documentos" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2">
+                            <TabsTrigger value="documentos" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-white flex items-center justify-center gap-2 py-3 sm:py-2 cursor-pointer">
                                 <FileText className="w-4 h-4" />
                                 <span className="text-sm">Documentos</span>
                             </TabsTrigger>
                         </TabsList>
-
-                        {/* Fotos */}
-
-
-
-
-
 
 
                         {/* Fotos */}
@@ -337,6 +336,7 @@ export function Multimedia() {
                         </TabsContent>
 
 
+
                         {/* Videos */}
                         <TabsContent value="videos">
                             <motion.div
@@ -353,63 +353,56 @@ export function Multimedia() {
                                         whileHover={{ y: -8 }}
                                         className="h-full"
                                     >
-                                        <a
-                                            href={video.youtubeUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="block h-full"
-                                        >
-                                            <Card className="overflow-hidden border-2 border-[#D4AF37]/20 hover:border-[#D4AF37] transition-all duration-300 hover:shadow-2xl cursor-pointer group h-full flex flex-col">
-                                                <div className="relative aspect-video overflow-hidden bg-[#1a1a1a]">
-                                                    <img
-                                                        src={video.thumbnail}
-                                                        alt={video.titulo}
-                                                        className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
-                                                    />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a]/90 via-[#1a1a1a]/40 to-transparent group-hover:from-[#1a1a1a]/95 transition-all duration-300" />
+                                        <Card className="overflow-hidden border-2 border-[#D4AF37]/20 hover:border-[#D4AF37] transition-all duration-300 hover:shadow-2xl group h-full flex flex-col">
+                                            <div
+                                                className="relative aspect-video overflow-hidden bg-[#1a1a1a] cursor-pointer"
+                                                onClick={() => setSelectedVideo(video)}
+                                            >
+                                                <img
+                                                    src={video.thumbnail}
+                                                    alt={video.titulo}
+                                                    className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a]/90 via-[#1a1a1a]/40 to-transparent group-hover:from-[#1a1a1a]/95 transition-all duration-300" />
 
-                                                    {/* Botón de play */}
-                                                    <div className="absolute inset-0 flex items-center justify-center">
-                                                        <motion.div
-                                                            whileHover={{ scale: 1.15 }}
-                                                            className="w-20 h-20 bg-[#D4AF37] rounded-full flex items-center justify-center shadow-2xl group-hover:bg-white transition-colors duration-300"
-                                                        >
-                                                            <Play className="w-10 h-10 text-[#1a1a1a] ml-1" fill="currentColor" />
-                                                        </motion.div>
-                                                    </div>
-
-                                                    {/* Duración */}
-                                                    <div className="absolute bottom-3 right-3 bg-[#1a1a1a]/90 backdrop-blur-sm px-3 py-1.5 rounded-lg text-white text-sm border border-[#D4AF37]/30">
-                                                        {video.duracion}
-                                                    </div>
-
-                                                    {/* Icono de enlace externo */}
-                                                    <div className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                                        <ExternalLink className="w-4 h-4 text-[#1a1a1a]" />
-                                                    </div>
+                                                {/* Botón de play */}
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <motion.div
+                                                        whileHover={{ scale: 1.15 }}
+                                                        className="w-20 h-20 bg-[#D4AF37] rounded-full flex items-center justify-center shadow-2xl group-hover:bg-white transition-colors duration-300"
+                                                    >
+                                                        <Play className="w-10 h-10 text-[#1a1a1a] ml-1" fill="currentColor" />
+                                                    </motion.div>
                                                 </div>
-                                                <div className="p-5 bg-white flex-1 flex flex-col">
-                                                    <h3 className="text-[#1a1a1a] mb-2 group-hover:text-[#D4AF37] transition-colors">{video.titulo}</h3>
-                                                    <p className="text-sm text-[#1a1a1a]/60 leading-relaxed flex-1">{video.descripcion}</p>
 
-                                                    {/* Indicador decorativo - siempre abajo */}
-                                                    <div className="flex items-center gap-2 mt-auto pt-3 border-t border-[#D4AF37]/20">
-                                                        <Play className="w-3 h-3 text-[#D4AF37]" />
-                                                        <span className="text-xs text-[#D4AF37] uppercase tracking-wider">Ver en YouTube</span>
-                                                    </div>
+                                                {/* Duración */}
+                                                <div className="absolute bottom-3 right-3 bg-[#1a1a1a]/90 backdrop-blur-sm px-3 py-1.5 rounded-lg text-white text-sm border border-[#D4AF37]/30">
+                                                    {video.duracion}
                                                 </div>
-                                            </Card>
-                                        </a>
+                                            </div>
+
+                                            <div className="p-5 bg-white flex-1 flex flex-col">
+                                                <h3 className="text-[#1a1a1a] mb-2 group-hover:text-[#D4AF37] transition-colors">{video.titulo}</h3>
+                                                <p className="text-sm text-[#1a1a1a]/60 leading-relaxed flex-1">{video.descripcion}</p>
+
+                                                {/* Enlace a YouTube */}
+                                                <a
+                                                    href={video.youtubeUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="flex items-center gap-2 mt-auto pt-3 border-t border-[#D4AF37]/20 hover:text-[#D4AF37] transition-colors"
+                                                >
+                                                    <ExternalLink className="w-3 h-3 text-[#D4AF37]" />
+                                                    <span className="text-xs text-[#D4AF37] uppercase tracking-wider">Ver en YouTube</span>
+                                                </a>
+                                            </div>
+                                        </Card>
                                     </motion.div>
                                 ))}
                             </motion.div>
                         </TabsContent>
 
-                        {/* Audio */}
-
-
-                        {/* Audio */}
-                        {/* Audio */}
 
 
                         {/* Audio */}
@@ -480,13 +473,6 @@ export function Multimedia() {
 
 
 
-
-
-                        {/* Documentos */}
-
-
-
-                        {/* Documentos */}
 
                         {/* Documentos */}
                         <TabsContent value="documentos">
@@ -581,7 +567,30 @@ export function Multimedia() {
             </Dialog>
 
 
+            {/* Modal para video de YouTube */}
+            <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
+                <DialogContent className="max-w-[95vw] sm:max-w-5xl p-0 bg-[#1a1a1a] border-[#D4AF37] overflow-hidden">
+                    <button
+                        onClick={() => setSelectedVideo(null)}
+                        className="absolute -top-10 right-0 sm:-top-12 sm:right-0 w-10 h-10 bg-[#D4AF37] rounded-full flex items-center justify-center hover:bg-white hover:text-[#D4AF37] transition-colors z-50 cursor-pointer group"
+                    >
+                        <X className="w-5 h-5 text-white group-hover:text-[#D4AF37]" strokeWidth={2.5} />
+                    </button>
 
+                    {selectedVideo && (
+                        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                            <iframe
+                                className="absolute top-0 left-0 w-full h-full"
+                                src={`https://www.youtube.com/embed/${getYouTubeId(selectedVideo.youtubeUrl)}?autoplay=1`}
+                                title={selectedVideo.titulo}
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
 
         </div>
     );
